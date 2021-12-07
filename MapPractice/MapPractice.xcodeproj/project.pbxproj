@@ -56,7 +56,6 @@
 				9D3E89757C5B7F98D292C6FD /* Pods-MapPractice.debug.xcconfig */,
 				8D60C196D769B3A2D50B4641 /* Pods-MapPractice.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
