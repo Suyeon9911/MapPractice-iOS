@@ -10,3 +10,8 @@
 
 
 ### 🥑 구현 영상 및 설명
+
+
+
+https://user-images.githubusercontent.com/81313960/145155166-e98ef98b-6a95-4f38-8023-81e43692c6ee.mp4
+
