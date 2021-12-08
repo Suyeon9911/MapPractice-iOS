@@ -64,7 +64,23 @@ extension ViewController {
 
 extension ViewController {
     @objc func segChanged(seg: UISegmentedControl) {
-
+        switch seg.selectedSegmentIndex {
+        case 0:
+            // 현재위치가 표시되도록 레이블 값을 공백으로 초기화
+            self.titleLabel.text = ""
+            self.locationLabel.text = ""
+            locationManager.startUpdatingLocation()
+        case 1:
+            setAnnotation(latitudeValue: 36.61248, longtitudeValue: 127.48870, delta: 0.01, title: "분평주공 1단지아파트", subtitle: "충청북도 청주시 서원구 월평로25 109동")
+            self.titleLabel.text = "보고 있는 위치"
+            self.locationLabel.text = "분평주공1단지아파트"
+        case 2:
+            setAnnotation(latitudeValue: 37.49660, longtitudeValue: 126.95695, delta: 0.01, title: "숭실대학교", subtitle: "서울특별시 동작구 상도로 369")
+            self.titleLabel.text = "보고 있는 위치"
+            self.locationLabel.text = "숭실대학교"
+        default:
+            locationManager.startUpdatingLocation()
+        }
     }
 }
 
@@ -72,13 +88,24 @@ extension ViewController {
 extension ViewController: CLLocationManagerDelegate {
 
     // 위도, 경도, 범위 -> 원하는 위치 표시하는 함수
-    func goLocation(latitudeValue: CLLocationDegrees, longitudeValue: CLLocationDegrees, delta span: Double) {
+    func goLocation(latitudeValue: CLLocationDegrees, longitudeValue: CLLocationDegrees, delta span: Double) -> CLLocationCoordinate2D {
         // 위도 값과 경도 값을 매개변수
         let pLocation = CLLocationCoordinate2DMake(latitudeValue, longitudeValue)
         // 범위 값을 매개변수로
         let spanValue = MKCoordinateSpan(latitudeDelta: span, longitudeDelta: span)
         let pRegion = MKCoordinateRegion(center: pLocation, span: spanValue)
         mapView.setRegion(pRegion, animated: true)
+
+        return pLocation
+    }
+
+    // 핀 설치하기
+    func setAnnotation(latitudeValue: CLLocationDegrees, longtitudeValue: CLLocationDegrees, delta span: Double, title strTitle: String, subtitle strSubtitle: String) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = goLocation(latitudeValue: latitudeValue, longitudeValue: longtitudeValue, delta: span)
+        annotation.title = strTitle
+        annotation.subtitle = strSubtitle
+        mapView.addAnnotation(annotation)
     }
 
     // 위치가 없데이트 되었을 때 지도에 위치를 나타내기 위한 함수
@@ -87,7 +114,7 @@ extension ViewController: CLLocationManagerDelegate {
         let pLocation = locations.last
         /// 마지막 위치의 위도와 경도 값을 가지고 앞에서 만든 goLocation 함수 호출
         /// delta 값은 지도의 크기. 값이 작을수록 확대되는 효과가 있음. 100배 확대
-        goLocation(latitudeValue: (pLocation?.coordinate.latitude)! , longitudeValue: (pLocation?.coordinate.longitude)! , delta: 0.01)
+        _ = goLocation(latitudeValue: (pLocation?.coordinate.latitude)! , longitudeValue: (pLocation?.coordinate.longitude)! , delta: 0.01)
 
         /// 위도와 경도 값을 가지고 역으로 위치 정보, 즉 주소 찾기
         CLGeocoder().reverseGeocodeLocation(pLocation!, completionHandler: {
